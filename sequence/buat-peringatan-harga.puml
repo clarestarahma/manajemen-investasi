@@ -1,0 +1,37 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Buat Peringatan Harga
+
+actor Investor as I
+boundary "Popup Buat Peringatan Harga" as PBPH
+boundary "Tab Peringatan Harga" as TPH
+control "Peringatan Harga Control" as PHC
+entity "Peringatan Harga" as PH
+
+ref over I, PH : Lihat Daftar Peringatan Harga
+
+I -> TPH : buatPeringatanHarga
+TPH -> PBPH : tampilkan
+
+loop error != null
+  I -> PBPH : submit
+  PBPH -> TPH : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
+  TPH -> PHC : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
+  PHC -> PH : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
+  PH --> PHC : peringatanHarga, error
+  PHC --> TPH : peringatanHarga, error
+
+  opt error != null
+    TPH -> PBPH : tampilkanError(error)
+    deactivate PBPH
+  end
+end
+
+TPH -> PBPH : tutupPopup
+deactivate PBPH
+@enduml

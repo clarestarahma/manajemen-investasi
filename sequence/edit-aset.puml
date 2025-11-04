@@ -1,0 +1,36 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Edit Kepemilikan Aset
+
+actor Investor as I
+boundary "Popup Edit Aset" as PEA
+boundary "Halaman Detail Portofolio" as HDP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+I -> HDP : editAset(idAset)
+HDP -> PEA : tampilkan(idAset, idPortofolio)
+
+loop error != null
+  I -> PEA : submit(jumlah)
+  PEA -> HDP : editKepemilikanAset(idAset, idPortofolio, jumlah)
+  HDP -> PC : editKepemilikanAset(idAset, idPortofolio, jumlah)
+  PC -> P : editKepemilikanAset(idAset, idPortofolio, jumlah)
+  P --> PC : kepemilikanAset, error
+  PC --> HDP : kepemilikanAset, error
+
+  opt error != null
+    HDP -> PEA : tampilkanError(error)
+    deactivate PEA
+  end
+end
+
+HDP -> PEA : tutupPopup
+deactivate PEA
+
+@enduml

@@ -1,0 +1,37 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Tambah Kepemilikan Aset
+
+actor Investor as I
+boundary "Popup Tambah Kepemilikan Aset" as PTKA
+boundary "Halaman Detail Portofolio" as TDP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+ref over I, P : Lihat Detail Portofolio
+
+I -> TDP : tambahKepemilikanAset
+TDP -> PTKA : tampilkan
+
+loop error != null
+  I -> PTKA : submit(idAset, jumlah)
+  PTKA -> TDP : tambahKepemilikanAset(idAset, jumlah, idInvestor)
+  TDP -> PC : tambahKepemilikanAset(idAset, jumlah, idInvestor)
+  PC -> P : tambahKepemilikanAset(idAset, jumlah, idInvestor)
+  P --> PC : kepemilikanAset, error
+  PC --> TDP : kepemilikanAset, error
+
+  opt error != null
+    TDP -> PTKA : tampilkanError(error)
+    deactivate PTKA
+  end
+end
+
+TDP -> PTKA : tutupPopup
+deactivate PTKA
+@enduml

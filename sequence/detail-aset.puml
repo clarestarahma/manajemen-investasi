@@ -1,0 +1,36 @@
+@startuml Sequence
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Detail Aset
+
+actor Investor as I
+boundary "Halaman Detail Portoflio" as HDP
+boundary "Halaman Detail Aset" as HDA
+control "Aset Control" as AC
+entity "Aset" as A
+
+I -> HDP : tampilkanDetailAset(idAset)
+
+HDP -> HDA : tampilkan(idAset)
+
+deactivate HDP
+
+HDA -> AC : getAset(idAset)
+
+AC -> A : getAset(idAset)
+
+A --> AC : aset, error
+
+AC --> HDA : aset, error
+
+alt error != null
+  HDA -> HDA : updateUI
+  deactivate HDA
+else error = null
+  HDA -> HDA : tampilkanError(error)
+  deactivate HDA
+end
+
+@enduml

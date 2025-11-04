@@ -1,0 +1,29 @@
+@startuml Sequence
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Lihat Daftar Peringatan Harga
+
+actor Investor as I
+boundary "Halaman Dashboard" as HD
+boundary "Tab Peringatan Harga" as TPH
+control "Peringatan Harga Control" as PHC
+entity "Peringatan Harga" as PH
+
+I -> HD : bukaPeringatanHarga
+HD -> TPH : tampilkan
+TPH -> PHC : getAllPeringatanHarga(idInvestor)
+PHC -> PH : getAll(idInvestor)
+PH --> PHC : listPeringatanHarga
+PHC --> TPH : listPeringatanHarga
+
+alt listPeringatanHarga.length = 0
+  TPH -> TPH : tampilkanPesan
+  deactivate TPH
+else listPeringatanHarga.length > 0
+  TPH -> TPH : tampilkanPeringatanHarga
+  deactivate TPH
+end
+
+@enduml

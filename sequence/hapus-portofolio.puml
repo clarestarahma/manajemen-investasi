@@ -1,0 +1,45 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Hapus Portofolio
+
+actor Investor as I
+boundary "Popup Hapus Portofolio" as PHP
+boundary "Tab Portofolio" as TP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+I -> TP : hapusPortofolio(idPortofolio)
+TP -> PHP : tampilkan
+
+I -> PHP : konfirmasi/batal
+
+PHP -> PHP : tutup
+deactivate PHP
+
+opt konfirmasi
+  PHP -> TP : hapusPortofolio(idPortofolio)
+  TP -> PC : hapusPortofolio(idPortofolio)
+  PC -> PH : hapusPortofolio(idPortofolio)
+  PH --> PC : error
+  PC --> TP : error
+
+  alt error != null
+    TP -> TP : tampilkanError(error)
+    deactivate TP
+  else error = null
+    TP -> TP : updateUI
+    deactivate TP
+  end
+end
+
+deactivate PHP
+deactivate PHP
+
+
+
+@enduml

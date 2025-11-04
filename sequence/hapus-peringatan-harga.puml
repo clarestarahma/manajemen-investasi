@@ -1,0 +1,45 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Hapus Peringatan Harga
+
+actor Investor as I
+boundary "Popup Hapus Peringatan Harga" as PHPH
+boundary "Tab Peringatan Harga" as TPH
+control "Peringatan Harga Control" as PHC
+entity "Peringatan Harga" as PH
+
+I -> TPH : hapusAset(idPeringatanHarga)
+TPH -> PHPH : tampilkan
+
+I -> PHPH : konfirmasi/batal
+
+PHPH -> PHPH : tutup
+deactivate PHPH
+
+opt konfirmasi
+  PHPH -> TPH : hapusPeringatanHarga(idPeringatanHarga)
+  TPH -> PHC : hapusPeringatanHarga(idPeringatanHarga)
+  PHC -> PH : hapusPeringatanHarga(idPeringatanHarga)
+  PH --> PHC : error
+  PHC --> TPH : error
+
+  alt error != null
+    TPH -> TPH : tampilkanError(error)
+    deactivate TPH
+  else error = null
+    TPH -> TPH : updateUI
+    deactivate TPH
+  end
+end
+
+deactivate PHPH
+deactivate PHPH
+
+
+
+@enduml

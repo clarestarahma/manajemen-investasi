@@ -1,0 +1,37 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Buat Portofolio
+
+actor Investor as I
+boundary "Popup Buat Portofolio" as PBP
+boundary "Tab Portofolio" as TP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+ref over I, P : Lihat Daftar Portofolio
+
+I -> TP : buatPortofolio
+TP -> PBP : tampilkan
+
+loop error != null
+  I -> PBP : submit
+  PBP -> TP : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
+  TP -> PC : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
+  PC -> P : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
+  P --> PC : Portofolio, error
+  PC --> TP : Portofolio, error
+
+  opt error != null
+    TP -> PBP : tampilkanError(error)
+    deactivate PBP
+  end
+end
+
+TP -> PBP : tutupPopup
+deactivate PBP
+@enduml

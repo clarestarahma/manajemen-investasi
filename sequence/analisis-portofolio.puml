@@ -1,0 +1,36 @@
+@startuml Sequence
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Analisis Portofolio
+
+actor Investor as I
+boundary "Halaman Detail Portofolio" as HDP
+boundary "Halaman Analisis Portofolio" as HAP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+I -> HDP : tampilkanAnalisisPortofolio(idPortofolio)
+
+HDP -> HAP : tampilkan(idPortofolio)
+
+deactivate HDP
+
+HAP -> PC : getAnalisis(idPortofolio)
+
+PC -> P : getAnalisis(idPortofolio)
+
+P --> PC : analisisPortofolio, error
+
+PC --> HAP : analisisPortofolio, error
+
+alt error != null
+  HAP -> HAP : tampilkanAnalisis
+  deactivate HAP
+else error = null
+  HAP -> HAP : tampilkanError
+  deactivate HAP
+end
+
+@enduml

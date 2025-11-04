@@ -1,0 +1,45 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Hapus Kepemilikan Aset
+
+actor Investor as I
+boundary "Popup Hapus Aset" as PHA
+boundary "Halaman Detail Portofolio" as HDP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+I -> HDP : hapusAset(idAset)
+HDP -> PHA : tampilkan
+
+I -> PHA : konfirmasi/batal
+
+PHA -> PHA : tutup
+deactivate PHA
+
+opt konfirmasi
+  PHA -> HDP : hapusKepemilikanAset(idAset, idPortofolio)
+  HDP -> PC : hapusKepemilikanAset(idAset, idPortofolio)
+  PC -> P : hapusKepemilikanAset(idAset, idPortofolio)
+  P --> PC : error
+  PC --> HDP : error
+
+  alt error != null
+    HDP -> HDP : tampilkanError(error)
+    deactivate HDP
+  else error = null
+    HDP -> HDP : updateUI
+    deactivate HDP
+  end
+end
+
+deactivate PHA
+deactivate PHA
+
+
+
+@enduml
