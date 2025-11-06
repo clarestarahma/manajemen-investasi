@@ -15,7 +15,7 @@ entity "Peringatan Harga" as PH
 
 ref over I, PH : Lihat Daftar Peringatan Harga
 
-I -> TPH : editPeringatanHarga
+I -> TPH : editPeringatanHarga(idPeringatanHarga)
 TPH -> PEPH : tampilkan(idPeringatanHarga)
 
 loop error != null

@@ -1,0 +1,29 @@
+@startuml Sequence
+
+hide footbox
+autoactivate on
+
+mainframe **sd** Lihat Daftar Portofolio
+
+actor Investor as I
+boundary "Halaman Dashboard" as HD
+boundary "Tab Portofolio" as TP
+control "Portofolio Control" as PC
+entity "Portofolio" as P
+
+I -> HD : bukaPortofolio
+HD -> TPH : tampilkan
+TPH -> PHC : getAllPortofolio(idInvestor)
+PHC -> PH : getAll(idInvestor)
+PH --> PHC : listPortofolio
+PHC --> TPH : listPortofolio
+
+alt listPortofolio.length = 0
+  TPH -> TPH : tampilkanPesan
+  deactivate TPH
+else listPortofolio.length > 0
+  TPH -> TPH : tampilkanPortofolio
+  deactivate TPH
+end
+
+@enduml
