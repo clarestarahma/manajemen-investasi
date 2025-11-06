@@ -11,25 +11,25 @@ boundary "Halaman Analisis Portofolio" as HAP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HDP : tampilkanAnalisisPortofolio(idPortofolio)
+I -> HDP : showPortofolioAnalysis(portofolioId)
 
-HDP -> HAP : tampilkan(idPortofolio)
+HDP -> HAP : show(portofolioId)
 
 deactivate HDP
 
-HAP -> PC : getAnalisis(idPortofolio)
+HAP -> PC : getByPortofolioId(portofolioId)
 
-PC -> P : getAnalisis(idPortofolio)
+PC -> P : getByPortofolioId(portofolioId)
 
-P --> PC : analisisPortofolio, error
+P --> PC : portofolioAnalysis, error
 
-PC --> HAP : analisisPortofolio, error
+PC --> HAP : portofolioAnalysis, error
 
 alt error != null
-  HAP -> HAP : tampilkanAnalisis
+  HAP -> HAP : show Analysis
   deactivate HAP
 else error = null
-  HAP -> HAP : tampilkanError
+  HAP -> HAP : showError
   deactivate HAP
 end
 
