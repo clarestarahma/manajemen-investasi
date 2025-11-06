@@ -15,23 +15,23 @@ entity "Portofolio" as P
 
 ref over I, P : Lihat Detail Portofolio
 
-I -> TDP : tambahKepemilikanAset
-TDP -> PTKA : tampilkan
+I -> TDP : addOwnAsset
+TDP -> PTKA : show
 
 loop error != null
-  I -> PTKA : submit(idAset, jumlah)
-  PTKA -> TDP : tambahKepemilikanAset(idAset, jumlah, idInvestor)
-  TDP -> PC : tambahKepemilikanAset(idAset, jumlah, idInvestor)
-  PC -> P : tambahKepemilikanAset(idAset, jumlah, idInvestor)
-  P --> PC : kepemilikanAset, error
-  PC --> TDP : kepemilikanAset, error
+  I -> PTKA : submit(assetId, quantity)
+  PTKA -> TDP : addOwnAsset(assetId, quantity, userId)
+  TDP -> PC : addOwnAsset(assetId, quantity, userId)
+  PC -> P : addOwnAsset(assetId, quantity, userId)
+  P --> PC : ownAsset, error
+  PC --> TDP : ownAsset, error
 
   opt error != null
-    TDP -> PTKA : tampilkanError(error)
+    TDP -> PTKA : showError(error)
     deactivate PTKA
   end
 end
 
-TDP -> PTKA : tutupPopup
+TDP -> PTKA : closePopup
 deactivate PTKA
 @enduml

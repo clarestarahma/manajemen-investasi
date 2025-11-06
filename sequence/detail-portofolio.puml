@@ -12,14 +12,14 @@ boundary "Halaman Detail Portofolio" as HDP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HD : tampilkanTabPortofolio
+I -> HD : showPortofolioTab
 
-HD -> TP : tampilkan
+HD -> TP : show
 
 deactivate HD
 
-I -> TP : tampilkanDetailPortofolio(idPortofolio)
-TP -> HDP : tampilkan(idPortofolio)
+I -> TP : showPortofolioDetail(idPortofolio)
+TP -> HDP : show(idPortofolio)
 
 deactivate TP
 deactivate TP
@@ -36,7 +36,7 @@ alt error != null
   HDP -> HDP : updateUI
   deactivate HDA
 else error = null
-  HDP -> HDP : tampilkanError(error)
+  HDP -> HDP : showError(error)
   deactivate HDA
 end
 

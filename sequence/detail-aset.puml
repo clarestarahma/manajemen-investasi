@@ -11,25 +11,25 @@ boundary "Halaman Detail Aset" as HDA
 control "Aset Control" as AC
 entity "Aset" as A
 
-I -> HDP : tampilkanDetailAset(idAset)
+I -> HDP : showAssetDetail(idAset)
 
-HDP -> HDA : tampilkan(idAset)
+HDP -> HDA : show(idAset)
 
 deactivate HDP
 
-HDA -> AC : getAset(idAset)
+HDA -> AC : getAsset(idAset)
 
-AC -> A : getAset(idAset)
+AC -> A : getAsset(idAset)
 
-A --> AC : aset, error
+A --> AC : asset, error
 
-AC --> HDA : aset, error
+AC --> HDA : asset, error
 
 alt error != null
   HDA -> HDA : updateUI
   deactivate HDA
 else error = null
-  HDA -> HDA : tampilkanError(error)
+  HDA -> HDA : showError(error)
   deactivate HDA
 end
 

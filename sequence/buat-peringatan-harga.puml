@@ -15,23 +15,23 @@ entity "Peringatan Harga" as PH
 
 ref over I, PH : Lihat Daftar Peringatan Harga
 
-I -> TPH : buatPeringatanHarga
-TPH -> PBPH : tampilkan
+I -> TPH : newPriceAlert
+TPH -> PBPH : show
 
 loop error != null
   I -> PBPH : submit
-  PBPH -> TPH : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
-  TPH -> PHC : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
-  PHC -> PH : buatPeringatanHarga(aset, mataUang, harga, idInvestor)
-  PH --> PHC : peringatanHarga, error
-  PHC --> TPH : peringatanHarga, error
+  PBPH -> TPH : newPriceAlert(asset, currency, harga, userId)
+  TPH -> PHC : newPriceAlert(asset, currency, harga, userId)
+  PHC -> PH : save
+  PH --> PHC : priceAlert, error
+  PHC --> TPH : save, error
 
   opt error != null
-    TPH -> PBPH : tampilkanError(error)
+    TPH -> PBPH : showError(error)
     deactivate PBPH
   end
 end
 
-TPH -> PBPH : tutupPopup
+TPH -> PBPH : closePopup
 deactivate PBPH
 @enduml

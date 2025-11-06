@@ -11,17 +11,17 @@ boundary "Tab Portofolio" as TP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HD : bukaPortofolio
-HD -> TPH : tampilkan
-TPH -> PHC : getAllPortofolio(idInvestor)
-PHC -> PH : getAll(idInvestor)
-PH --> PHC : listPortofolio
-PHC --> TPH : listPortofolio
+I -> HD : openPortofolio
+HD -> TPH : show
+TPH -> PHC : getAllPortofolio(userId)
+PHC -> PH : getAll(userId)
+PH --> PHC : portofolioList
+PHC --> TPH : portofolioList
 
-alt listPortofolio.length = 0
+alt portofolioList.length = 0
   TPH -> TPH : tampilkanPesan
   deactivate TPH
-else listPortofolio.length > 0
+else portofolioList.length > 0
   TPH -> TPH : tampilkanPortofolio
   deactivate TPH
 end

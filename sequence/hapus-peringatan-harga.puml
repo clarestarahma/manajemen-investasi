@@ -13,23 +13,23 @@ boundary "Tab Peringatan Harga" as TPH
 control "Peringatan Harga Control" as PHC
 entity "Peringatan Harga" as PH
 
-I -> TPH : hapusAset(idPeringatanHarga)
-TPH -> PHPH : tampilkan
+I -> TPH : deleteAsset(alertId)
+TPH -> PHPH : show
 
-I -> PHPH : konfirmasi/batal
+I -> PHPH : confirm/cancel
 
-PHPH -> PHPH : tutup
+PHPH -> PHPH : close
 deactivate PHPH
 
 opt konfirmasi
-  PHPH -> TPH : hapusPeringatanHarga(idPeringatanHarga)
-  TPH -> PHC : hapusPeringatanHarga(idPeringatanHarga)
-  PHC -> PH : hapusPeringatanHarga(idPeringatanHarga)
+  PHPH -> TPH : deletePriceAlert(alertId)
+  TPH -> PHC : deletePriceAlert(alertId)
+  PHC -> PH : deletePriceAlert(alertId)
   PH --> PHC : error
   PHC --> TPH : error
 
   alt error != null
-    TPH -> TPH : tampilkanError(error)
+    TPH -> TPH : showError(error)
     deactivate TPH
   else error = null
     TPH -> TPH : updateUI

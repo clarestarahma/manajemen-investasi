@@ -11,17 +11,17 @@ boundary "Tab Peringatan Harga" as TPH
 control "Peringatan Harga Control" as PHC
 entity "Peringatan Harga" as PH
 
-I -> HD : bukaPeringatanHarga
-HD -> TPH : tampilkan
-TPH -> PHC : getAllPeringatanHarga(idInvestor)
-PHC -> PH : getAll(idInvestor)
-PH --> PHC : listPeringatanHarga
-PHC --> TPH : listPeringatanHarga
+I -> HD : openPriceAlert
+HD -> TPH : show
+TPH -> PHC : getAllPriceAlert(userId)
+PHC -> PH : getAll(userId)
+PH --> PHC : priceAlertList
+PHC --> TPH : priceAlertList
 
-alt listPeringatanHarga.length = 0
+alt priceAlertList.length = 0
   TPH -> TPH : tampilkanPesan
   deactivate TPH
-else listPeringatanHarga.length > 0
+else priceAlertList.length > 0
   TPH -> TPH : tampilkanPeringatanHarga
   deactivate TPH
 end

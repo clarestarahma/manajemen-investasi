@@ -15,23 +15,23 @@ entity "Portofolio" as P
 
 ref over I, P : Lihat Daftar Portofolio
 
-I -> TP : editPortofolio(idPortofolio)
-TP -> PEP : tampilkan(idPortofolio)
+I -> TP : editPortofolio(portofolioId)
+TP -> PEP : tampilkan(portofolioId)
 
 loop error != null
   I -> PEP : submit
-  PEP -> TP : editPortofolio(idPortofolio, nama, mataUang, saldoTunai)
-  TP -> PC : editPortofolio(idPortofolio, nama, mataUang, saldoTunai)
-  PC -> P : editPortofolio(idPortofolio, nama, mataUang, saldoTunai)
+  PEP -> TP : editPortofolio(portofolioId, name, mataUang, cashBalance)
+  TP -> PC : editPortofolio(portofolioId, name, mataUang, cashBalance)
+  PC -> P : editPortofolio(portofolioId, name, mataUang, cashBalance)
   P --> PC : Portofolio, error
   PC --> TP : Portofolio, error
 
   opt error != null
-    TP -> PEP : tampilkanError(error)
+    TP -> PEP : showError(error)
     deactivate PEP
   end
 end
 
-TP -> PEP : tutupPopup
+TP -> PEP : closePopup
 deactivate PEP
 @enduml

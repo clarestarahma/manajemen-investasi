@@ -13,24 +13,24 @@ boundary "Halaman Detail Portofolio" as HDP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HDP : editAset(idAset)
-HDP -> PEA : tampilkan(idAset, idPortofolio)
+I -> HDP : editAsset(idAset)
+HDP -> PEA : show(idAset, idPortofolio)
 
 loop error != null
   I -> PEA : submit(jumlah)
-  PEA -> HDP : editKepemilikanAset(idAset, idPortofolio, jumlah)
-  HDP -> PC : editKepemilikanAset(idAset, idPortofolio, jumlah)
-  PC -> P : editKepemilikanAset(idAset, idPortofolio, jumlah)
-  P --> PC : kepemilikanAset, error
-  PC --> HDP : kepemilikanAset, error
+  PEA -> HDP : editOwnAsset(idAset, idPortofolio, jumlah)
+  HDP -> PC : editOwnAsset(idAset, idPortofolio, jumlah)
+  PC -> P : editOwnAsset(idAset, idPortofolio, jumlah)
+  P --> PC : ownAsset, error
+  PC --> HDP : ownAsset, error
 
   opt error != null
-    HDP -> PEA : tampilkanError(error)
+    HDP -> PEA : showError(error)
     deactivate PEA
   end
 end
 
-HDP -> PEA : tutupPopup
+HDP -> PEA : closePopup
 deactivate PEA
 
 @enduml

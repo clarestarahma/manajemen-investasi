@@ -13,23 +13,23 @@ boundary "Tab Portofolio" as TP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> TP : hapusPortofolio(idPortofolio)
-TP -> PHP : tampilkan
+I -> TP : deletePortofolio(portofolioId)
+TP -> PHP : show
 
-I -> PHP : konfirmasi/batal
+I -> PHP : comfirm/cancel
 
-PHP -> PHP : tutup
+PHP -> PHP : close
 deactivate PHP
 
 opt konfirmasi
-  PHP -> TP : hapusPortofolio(idPortofolio)
-  TP -> PC : hapusPortofolio(idPortofolio)
-  PC -> PH : hapusPortofolio(idPortofolio)
+  PHP -> TP : deletePortofolio(portofolioId)
+  TP -> PC : deletePortofolio(portofolioId)
+  PC -> PH : deletePortofolio(portofolioId)
   PH --> PC : error
   PC --> TP : error
 
   alt error != null
-    TP -> TP : tampilkanError(error)
+    TP -> TP : showError(error)
     deactivate TP
   else error = null
     TP -> TP : updateUI
@@ -39,7 +39,5 @@ end
 
 deactivate PHP
 deactivate PHP
-
-
 
 @enduml

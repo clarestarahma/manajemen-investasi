@@ -13,23 +13,23 @@ boundary "Halaman Detail Portofolio" as HDP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HDP : hapusAset(idAset)
-HDP -> PHA : tampilkan
+I -> HDP : deleteAsset(assetId)
+HDP -> PHA : show
 
-I -> PHA : konfirmasi/batal
+I -> PHA : confirm/cancel
 
-PHA -> PHA : tutup
+PHA -> PHA : close
 deactivate PHA
 
 opt konfirmasi
-  PHA -> HDP : hapusKepemilikanAset(idAset, idPortofolio)
-  HDP -> PC : hapusKepemilikanAset(idAset, idPortofolio)
-  PC -> P : hapusKepemilikanAset(idAset, idPortofolio)
+  PHA -> HDP : deleteOwnAsset(assetId, portofolioId)
+  HDP -> PC : deleteOwnAsset(assetId, portofolioId)
+  PC -> P : deleteOwnAsset(assetId, portofolioId)
   P --> PC : error
   PC --> HDP : error
 
   alt error != null
-    HDP -> HDP : tampilkanError(error)
+    HDP -> HDP : showError(error)
     deactivate HDP
   else error = null
     HDP -> HDP : updateUI
