@@ -3,7 +3,7 @@
 hide footbox
 autoactivate on
 
-mainframe **sd** Lihat Daftar Portofolio
+mainframe *sd* Lihat Daftar Portofolio
 
 actor Investor as I
 boundary "Halaman Dashboard" as HD
@@ -12,18 +12,18 @@ control "Portofolio Control" as PC
 entity "Portofolio" as P
 
 I -> HD : openPortofolio
-HD -> TPH : show
-TPH -> PHC : getAllPortofolio(userId)
-PHC -> PH : getAll(userId)
-PH --> PHC : portofolioList
-PHC --> TPH : portofolioList
+HD -> TP : show
+TP -> PC : getAllPortofolio(userId)
+PC -> P : getAll(userId)
+P --> PC : portofolioList
+PC --> TP : portofolioList
 
 alt portofolioList.length = 0
-  TPH -> TPH : tampilkanPesan
-  deactivate TPH
+  TP -> TP : tampilkanPesan
+  deactivate TP
 else portofolioList.length > 0
-  TPH -> TPH : tampilkanPortofolio
-  deactivate TPH
+  TP -> TP : tampilkanPortofolio
+  deactivate TP
 end
 
 @enduml
