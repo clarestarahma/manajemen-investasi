@@ -37,7 +37,7 @@ alt error != null
   deactivate HDP
 else error = null
   HDP -> HDP : showError(error)
-  deactivate HDA
+  deactivate HDP
 end
 
 @enduml
