@@ -25,8 +25,8 @@ opt konfirmasi
   PHPH -> TPH : deletePriceAlert(alertId)
   TPH -> PHC : deletePriceAlert(alertId)
   PHC -> PH : deletePriceAlert(alertId)
-  PH --> PHC : error
-  PHC --> TPH : error
+  PH -->> PHC : error
+  PHC -->> TPH : error
 
   alt error != null
     TPH -> TPH : showError(error)

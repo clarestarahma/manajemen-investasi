@@ -21,9 +21,9 @@ HDA -> AC : getAsset(idAset)
 
 AC -> A : getAsset(idAset)
 
-A --> AC : asset, error
+A -->> AC : asset, error
 
-AC --> HDA : asset, error
+AC -->> HDA : asset, error
 
 alt error != null
   HDA -> HDA : updateUI

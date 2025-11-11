@@ -23,8 +23,8 @@ loop error != null
   PBP -> TP : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
   TP -> PC : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
   PC -> P : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
-  P --> PC : Portofolio, error
-  PC --> TP : Portofolio, error
+  P -->> PC : Portofolio, error
+  PC -->> TP : Portofolio, error
 
   opt error != null
     TP -> PBP : tampilkanError(error)

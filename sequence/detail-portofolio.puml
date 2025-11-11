@@ -28,9 +28,9 @@ HDP -> PC : getPortofolio(idPortofolio)
 
 PC -> P : getPortofolio(idPortofolio)
 
-P --> PC : Portofolio, error
+P -->> PC : Portofolio, error
 
-PC --> HDP : Portofolio, error
+PC -->> HDP : Portofolio, error
 
 alt error != null
   HDP -> HDP : updateUI

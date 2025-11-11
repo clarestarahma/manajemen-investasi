@@ -23,8 +23,8 @@ loop error != null
   PBPH -> TPH : newPriceAlert(asset, currency, harga, userId)
   TPH -> PHC : newPriceAlert(asset, currency, harga, userId)
   PHC -> PH : save
-  PH --> PHC : priceAlert, error
-  PHC --> TPH : save, error
+  PH -->> PHC : priceAlert, error
+  PHC -->> TPH : save, error
 
   opt error != null
     TPH -> PBPH : showError(error)

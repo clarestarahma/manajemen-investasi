@@ -21,9 +21,9 @@ HAP -> PC : getByPortofolioId(portofolioId)
 
 PC -> P : getByPortofolioId(portofolioId)
 
-P --> PC : portofolioAnalysis, error
+P -->> PC : portofolioAnalysis, error
 
-PC --> HAP : portofolioAnalysis, error
+PC -->> HAP : portofolioAnalysis, error
 
 alt error != null
   HAP -> HAP : show Analysis

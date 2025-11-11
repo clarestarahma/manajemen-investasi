@@ -15,8 +15,8 @@ I -> HD : openPortofolio
 HD -> TP : show
 TP -> PC : getAllPortofolio(userId)
 PC -> P : getAll(userId)
-P --> PC : portofolioList
-PC --> TP : portofolioList
+P -->> PC : portofolioList
+PC -->> TP : portofolioList
 
 alt portofolioList.length = 0
   TP -> TP : tampilkanPesan

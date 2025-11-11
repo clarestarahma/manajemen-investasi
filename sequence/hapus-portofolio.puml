@@ -25,8 +25,8 @@ opt konfirmasi
   PHP -> TP : deletePortofolio(portofolioId)
   TP -> PC : deletePortofolio(portofolioId)
   PC -> P : deletePortofolio(portofolioId)
-  P --> PC : error
-  PC --> TP : error
+  P -->> PC : error
+  PC -->> TP : error
 
   alt error != null
     TP -> TP : showError(error)

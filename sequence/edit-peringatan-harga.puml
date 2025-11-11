@@ -23,8 +23,8 @@ loop error != null
   PEPH -> TPH : editPriceAlert(alertId, currency, priceTarget)
   TPH -> PHC : editPriceAlert(alertId, currency, priceTarget)
   PHC -> PH : editPriceAlert(alertId, currency, priceTarget)
-  PH --> PHC : priceAlert, error
-  PHC --> TPH : priceAlert, error
+  PH -->> PHC : priceAlert, error
+  PHC -->> TPH : priceAlert, error
 
   opt error != null
     TPH -> PEPH : showError

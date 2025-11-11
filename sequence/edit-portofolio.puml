@@ -23,8 +23,8 @@ loop error != null
   PEP -> TP : editPortofolio(portofolioId, name, mataUang, cashBalance)
   TP -> PC : editPortofolio(portofolioId, name, mataUang, cashBalance)
   PC -> P : editPortofolio(portofolioId, name, mataUang, cashBalance)
-  P --> PC : Portofolio, error
-  PC --> TP : Portofolio, error
+  P -->> PC : Portofolio, error
+  PC -->> TP : Portofolio, error
 
   opt error != null
     TP -> PEP : showError(error)

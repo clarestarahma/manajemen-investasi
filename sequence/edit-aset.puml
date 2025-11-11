@@ -21,8 +21,8 @@ loop error != null
   PEA -> HDP : editOwnAsset(idAset, idPortofolio, jumlah)
   HDP -> PC : editOwnAsset(idAset, idPortofolio, jumlah)
   PC -> P : editOwnAsset(idAset, idPortofolio, jumlah)
-  P --> PC : ownAsset, error
-  PC --> HDP : ownAsset, error
+  P -->> PC : ownAsset, error
+  PC -->> HDP : ownAsset, error
 
   opt error != null
     HDP -> PEA : showError(error)

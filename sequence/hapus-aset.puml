@@ -25,8 +25,8 @@ opt konfirmasi
   PHA -> HDP : deleteOwnAsset(assetId, portofolioId)
   HDP -> PC : deleteOwnAsset(assetId, portofolioId)
   PC -> P : deleteOwnAsset(assetId, portofolioId)
-  P --> PC : error
-  PC --> HDP : error
+  P -->> PC : error
+  PC -->> HDP : error
 
   alt error != null
     HDP -> HDP : showError(error)
@@ -39,5 +39,7 @@ end
 
 deactivate PHA
 deactivate PHA
+
+
 
 @enduml

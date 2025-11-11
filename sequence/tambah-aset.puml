@@ -23,8 +23,8 @@ loop error != null
   PTKA -> TDP : addOwnAsset(assetId, quantity, userId)
   TDP -> PC : addOwnAsset(assetId, quantity, userId)
   PC -> P : addOwnAsset(assetId, quantity, userId)
-  P --> PC : ownAsset, error
-  PC --> TDP : ownAsset, error
+  P -->> PC : ownAsset, error
+  PC -->> TDP : ownAsset, error
 
   opt error != null
     TDP -> PTKA : showError(error)

@@ -15,8 +15,8 @@ I -> HD : openPriceAlert
 HD -> TPH : show
 TPH -> PHC : getAllPriceAlert(userId)
 PHC -> PH : getAll(userId)
-PH --> PHC : priceAlertList
-PHC --> TPH : priceAlertList
+PH -->> PHC : priceAlertList
+PHC -->> TPH : priceAlertList
 
 alt priceAlertList.length = 0
   TPH -> TPH : tampilkanPesan
