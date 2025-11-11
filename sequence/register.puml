@@ -3,6 +3,8 @@
 hide footbox
 autoactivate on
 
+mainframe **sd** Register
+
 actor "Pengguna"
 boundary "Form Registrasi" as FR
 boundary "Form OTP" as FOTP

@@ -3,6 +3,8 @@
 hide footbox
 autoactivate on
 
+mainframe **sd** Login
+
 actor "Pengguna"
 boundary "Halaman Login" as HL
 boundary "Form OTP" as FOTP
