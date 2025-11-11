@@ -8,7 +8,7 @@ autoactivate on
 mainframe **sd** Buat Portofolio
 
 actor Investor as I
-boundary "Popup Buat Portofolio" as PBP
+boundary "Modal Buat Portofolio" as PBP
 boundary "Tab Portofolio" as TP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
@@ -32,6 +32,6 @@ loop error != null
   end
 end
 
-TP -> PBP : tutupPopup
+TP -> PBP : tutupModal
 deactivate PBP
 @enduml

@@ -8,7 +8,7 @@ autoactivate on
 mainframe **sd** Buat Peringatan Harga
 
 actor Investor as I
-boundary "Popup Buat Peringatan Harga" as PBPH
+boundary "Modal Buat Peringatan Harga" as PBPH
 boundary "Tab Peringatan Harga" as TPH
 control "Peringatan Harga Control" as PHC
 entity "Peringatan Harga" as PH
@@ -32,6 +32,6 @@ loop error != null
   end
 end
 
-TPH -> PBPH : closePopup
+TPH -> PBPH : closeModal
 deactivate PBPH
 @enduml

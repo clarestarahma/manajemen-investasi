@@ -8,7 +8,7 @@ autoactivate on
 mainframe **sd** Edit Peringatan Harga
 
 actor Investor as I
-boundary "Popup Edit Peringatan Harga" as PEPH
+boundary "Modal Edit Peringatan Harga" as PEPH
 boundary "Tab Peringatan Harga" as TPH
 control "Peringatan Harga Control" as PHC
 entity "Peringatan Harga" as PH
@@ -32,6 +32,6 @@ loop error != null
   end
 end
 
-TPH -> PEPH : closePopup
+TPH -> PEPH : closeModal
 deactivate PEPH
 @enduml

@@ -5,7 +5,7 @@ autoactivate on
 
 actor "Investor"
 boundary "Button Logout" as BL
-boundary "Popup Konfirmasi Logout" as PKL
+boundary "Modal Konfirmasi Logout" as PKL
 control "Auth Control" as AC
 entity "Auth Service" as ASR
 entity "" as user

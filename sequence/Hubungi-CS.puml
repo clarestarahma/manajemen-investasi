@@ -6,7 +6,7 @@ autoactivate on
 actor "Investor" as I
 boundary "Halaman Login" as L
 boundary "Button Logout" as BL
-boundary "Popup Konfirmasi Logout" as PKL
+boundary "Modal Konfirmasi Logout" as PKL
 
 I -> L
 
