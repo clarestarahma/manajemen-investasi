@@ -7,11 +7,12 @@ mainframe **Interaksi** Login
 actor "Pengguna"
 boundary "Form Login" as FL
 boundary "Form OTP" as FOTP
-boundary "Halaman Dashboard" as D
+boundary "Halaman Dashboard" as HD
 control "Auth Control" as AC
 ' entity "Auth Service" as ASR
 entity "User" as User
-entity "UserOTP" as UOTP
+entity "User" as User2
+entity "User OTP" as UOTP
 
 Pengguna -> FL : submit(email, passoword)
 activate FL
@@ -35,7 +36,6 @@ end
 
 alt failed
   User -->> AC : error
-  deactivate User
 
   AC -->> FL : error
   FL -> FL : showError
@@ -47,10 +47,48 @@ else success
   deactivate User
 
   User -->> AC : User
+  deactivate User
 end
 
+AC -->> FL : userId
+deactivate AC
 
+FL -> FOTP : show
+deactivate FL
+activate FOTP
 
+Pengguna -->> FOTP : submit(otp)
+FOTP -> AC : verifyOTP(userId, otp)
+activate AC
+
+AC -> User2 ** : get(userId)
+activate User2
+
+User2 -->> AC : User
+deactivate User2
+
+AC -> User2 : verifyOTP(otp)
+activate User2
+
+User2 -> UOTP ** : getByUserId(userId)
+activate UOTP
+UOTP -->> User2 : UserOTP
+deactivate UOTP
+
+User2 -->> AC : isCorrect
+deactivate User2
+
+AC -->> FOTP : isCorrect
+
+alt isCorrect = false
+  FOTP -> FOTP : showError
+  activate FOTP
+  deactivate FOTP
+else isCorrect = true
+  FOTP -> HD : show
+  deactivate FOTP
+  activate HD 
+end
 
 
 
