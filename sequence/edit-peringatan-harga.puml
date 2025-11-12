@@ -1,37 +1,73 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-
 hide footbox
-autoactivate on
 
-mainframe **sd** Edit Peringatan Harga
+mainframe **Interaksi** Edit Peringatan Harga
 
 actor Investor as I
-boundary "Modal Edit Peringatan Harga" as PEPH
-boundary "Tab Peringatan Harga" as TPH
-control "Peringatan Harga Control" as PHC
-entity "Peringatan Harga" as PH
+boundary "Halaman Detail Peringatan Harga" as HDP
+boundary "Modal Edit Peringatan Harga" as MEPH
+control "Price Alert Control" as PAC
+entity "PriceAlert" as PA
 
-ref over I, PH : Lihat Daftar Peringatan Harga
+ref over I, PA : Lihat Daftar Peringatan Harga
 
-I -> TPH : editPriceAlert(alertId)
-TPH -> PEPH : tampilkan(alertId)
+' User opens the price alert modal
+I -> HDP : editPriceAlert(id)
+activate HDP
 
-loop error != null
-  I -> PEPH : submit(currency, priceTarget)
-  PEPH -> TPH : editPriceAlert(alertId, currency, priceTarget)
-  TPH -> PHC : editPriceAlert(alertId, currency, priceTarget)
-  PHC -> PH : editPriceAlert(alertId, currency, priceTarget)
-  PH -->> PHC : priceAlert, error
-  PHC -->> TPH : priceAlert, error
+HDP -> MEPH : showModal(id)
+activate MEPH
 
-  opt error != null
-    TPH -> PEPH : showError
-    deactivate PEPH
-  end
+' User submits form
+I -> MEPH : submit(id, priceTarget)
+activate MEPH
+
+MEPH -> PAC : editPriceAlert(id, priceTarget)
+activate PAC
+
+'Validation step
+PAC -> PAC : validate
+activate PAC
+deactivate PAC
+
+alt invalid input
+  PAC -->> MEPH : error
+  MEPH -->> MEPH : showError
+else valid input
+  PAC -> PA ** : get(id)
+  activate PA
+
+  PA -->> PAC : PriceAlert
+  deactivate PA
 end
 
-TPH -> PEPH : closeModal
-deactivate PEPH
+  PAC -> PA : update field (priceTarget)
+  activate PA
+
+  PA -->> PAC : done
+  deactivate PA
+
+  PAC -> PA : save
+  activate PA
+  PA -->> PAC : return
+  deactivate PA
+
+  PAC -->> MEPH : priceAlert
+  deactivate PAC
+
+  'Update UI and close modal
+  MEPH -> HDP : updatePriceAlertList
+  activate HDP
+
+  HDP -->> MEPH : return
+  deactivate HDP
+
+  MEPH -->> MEPH : hideModal
+  activate MEPH
+  deactivate MEPH
+  deactivate MEPH
+  deactivate MEPH
+
 @enduml

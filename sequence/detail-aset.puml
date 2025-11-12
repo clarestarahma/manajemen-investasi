@@ -1,36 +1,40 @@
 @startuml Sequence
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Detail Aset
+mainframe **Interaksi** Detail Aset
 
 actor Investor as I
 boundary "Halaman Detail Portoflio" as HDP
 boundary "Halaman Detail Aset" as HDA
-control "Aset Control" as AC
-entity "Aset" as A
+control "Asset Control" as AC
+entity "Asset" as A
 
-I -> HDP : showAssetDetail(idAset)
+I -> HDP : showAssetDetail(id)
+activate HDP
 
-HDP -> HDA : show(idAset)
-
+HDP -> HDA : show(id)
+activate HDA
 deactivate HDP
 
-HDA -> AC : getAsset(idAset)
+HDA -> AC : getAsset(id)
+activate AC
 
-AC -> A : getAsset(idAset)
+AC -> A ** : get(id)
+activate A
 
-A -->> AC : asset, error
+alt asset found
+  A -->> AC : asset
+  AC -->> HDA : asset
+  HDA -> HDA : showAsset
+else asset not found
+  A -->> AC : error
+  deactivate A
 
-AC -->> HDA : asset, error
+  AC -->> HDA : error
+  deactivate AC
 
-alt error != null
-  HDA -> HDA : updateUI
-  deactivate HDA
-else error = null
-  HDA -> HDA : showError(error)
-  deactivate HDA
+  HDA -> HDA : showError
 end
 
 @enduml

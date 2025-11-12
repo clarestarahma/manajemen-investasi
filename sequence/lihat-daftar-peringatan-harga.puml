@@ -3,7 +3,7 @@
 hide footbox
 autoactivate on
 
-mainframe **sd** Lihat Daftar Peringatan Harga
+mainframe **Interaction** Lihat Daftar Peringatan Harga
 
 actor Investor as I
 boundary "Halaman Dashboard" as HD
@@ -13,16 +13,16 @@ entity "Peringatan Harga" as PH
 
 I -> HD : openPriceAlert
 HD -> TPH : show
-TPH -> PHC : getAllPriceAlert(userId)
-PHC -> PH : getAll(userId)
-PH -->> PHC : priceAlertList
-PHC -->> TPH : priceAlertList
+TPH -> PHC : getPriceAlertByUserId(userId)
+PHC -> PH ** : getByUserId(userId)
+PH -->> PHC : priceAlert[]
+PHC -->> TPH : priceAlert[]
 
 alt priceAlertList.length = 0
-  TPH -> TPH : tampilkanPesan
+  TPH -> TPH : showPlaceholderText
   deactivate TPH
 else priceAlertList.length > 0
-  TPH -> TPH : tampilkanPeringatanHarga
+  TPH -> TPH : showPriceAlertList
   deactivate TPH
 end
 

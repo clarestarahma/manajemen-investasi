@@ -1,51 +1,57 @@
 @startuml Sequence
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Login
+mainframe **Interaksi** Login
 
 actor "Pengguna"
-boundary "Halaman Login" as HL
+boundary "Form Login" as FL
 boundary "Form OTP" as FOTP
 boundary "Halaman Dashboard" as D
 control "Auth Control" as AC
 ' entity "Auth Service" as ASR
-entity "User" as user
+entity "User" as User
+entity "UserOTP" as UOTP
 
-loop loginStatus = false
-    Pengguna -> HL: submit
-    HL -> HL: loginStatus = check 
-    deactivate HL
+Pengguna -> FL : submit(email, passoword)
+activate FL
 
-    opt loginStatus = false
-        HL -> HL: showError
-        deactivate HL
-    end
-end 
+FL -> AC : login(email, password)
+activate AC
 
-HL -> AC : login(email, pass)
-AC -> user : login(email, pass)
-user -->> AC : userStatus
+AC -> AC : validate
+activate AC
+deactivate AC
 
-alt userStatus = false
-    AC -> HL : showError
-    deactivate HL  
-else userStatus = true 
-    AC -> FOTP : show
-    deactivate FOTP
+alt invalid
+  AC -->> FL : error
+  FL -> FL : showError
+  activate FL
+  deactivate FL
+else valid
+  AC -> User ** : login(email, password)
+  activate User
 end
-    loop otpStatus = false
-        Pengguna -> FOTP: submit
-        FOTP -> FOTP: otpStatus = check
-        deactivate FOTP
-        opt otpStatus = false
-            FOTP -> FOTP: showError
-        end
-    end
 
-FOTP -> D : tampilkan
-deactivate FOTP 
+alt failed
+  User -->> AC : error
+  deactivate User
+
+  AC -->> FL : error
+  FL -> FL : showError
+  activate FL
+  deactivate FL
+else success
+  User -> User : createOTP
+  activate User
+  deactivate User
+
+  User -->> AC : User
+end
+
+
+
+
 
 
 @enduml

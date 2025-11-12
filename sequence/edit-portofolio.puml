@@ -1,37 +1,74 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-
 hide footbox
-autoactivate on
 
-mainframe **sd** Edit Portofolio
+mainframe **Interaksi** Edit Portofolio
 
 actor Investor as I
-boundary "Popup Edit Portofolio" as PEP
-boundary "Tab Portofolio" as TP
+boundary "Halaman Detail Portofolio" as HDP
+boundary "Modal Edit Portofolio" as MEP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
 ref over I, P : Lihat Daftar Portofolio
 
-I -> TP : editPortofolio(portofolioId)
-TP -> PEP : tampilkan(portofolioId)
+' User opens the portfolio modal
+I -> HDP : editPortofolio(id)
+activate HDP
 
-loop error != null
-  I -> PEP : submit
-  PEP -> TP : editPortofolio(portofolioId, name, mataUang, cashBalance)
-  TP -> PC : editPortofolio(portofolioId, name, mataUang, cashBalance)
-  PC -> P : editPortofolio(portofolioId, name, mataUang, cashBalance)
-  P -->> PC : Portofolio, error
-  PC -->> TP : Portofolio, error
+HDP -> MEP : showModal(id)
+activate MEP
 
-  opt error != null
-    TP -> PEP : showError(error)
-    deactivate PEP
-  end
+' User submits form
+I -> MEP : submit(id, name, currency, cashBalance)
+activate MEP
+
+MEP -> PC : editPortofolio(id, name, currency, cashBalance)
+activate PC
+
+'Validation step
+PC -> PC : validate
+activate PC
+deactivate PC
+
+alt invalid input
+  PC -->> MEP : error
+  MEP -->> MEP : showError
+else valid input
+  PC -> P ** : get(id)
+  activate P
+
+  P -->> PC : Portofolio
+  deactivate P
 end
 
-TP -> PEP : closePopup
-deactivate PEP
+  PC -> P : update field (name, currency, cashBalance)
+  activate P
+
+  P -->> PC : done
+  deactivate P
+
+  PC -> P : save
+  activate P
+
+  P -->> PC : return
+  deactivate P
+
+  PC -->> MEP : Portofolio
+  deactivate PC
+
+  'Update UI and close modal
+  MEP -> HDP : updatePortofolioList
+  activate HDP
+
+  HDP -->> MEP : return
+  deactivate HDP
+
+  MEP -->> MEP : hideModal
+  activate MEP
+  deactivate MEP
+  deactivate MEP
+  deactivate MEP
+
 @enduml

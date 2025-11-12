@@ -3,7 +3,7 @@
 hide footbox
 autoactivate on
 
-mainframe **sd** Register
+mainframe **Interaction** Register
 
 actor "Pengguna"
 boundary "Form Registrasi" as FR

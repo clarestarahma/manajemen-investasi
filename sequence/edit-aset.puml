@@ -1,36 +1,72 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-
 hide footbox
-autoactivate on
 
-mainframe **sd** Edit Kepemilikan Aset
+mainframe **Interaksi** Edit Kepemilikan Aset
 
 actor Investor as I
-boundary "Modal Edit Aset" as PEA
 boundary "Halaman Detail Portofolio" as HDP
+boundary "Modal Edit Aset" as MEA
 control "Portofolio Control" as PC
-entity "Portofolio" as P
+entity "PortofolioAsset" as PA
 
-I -> HDP : editAsset(idAset)
-HDP -> PEA : show(idAset, idPortofolio)
+ref over I, PA : Lihat Detail Portofolio
 
-loop error != null
-  I -> PEA : submit(jumlah)
-  PEA -> HDP : editOwnAsset(idAset, idPortofolio, jumlah)
-  HDP -> PC : editOwnAsset(idAset, idPortofolio, jumlah)
-  PC -> P : editOwnAsset(idAset, idPortofolio, jumlah)
-  P -->> PC : ownAsset, error
-  PC -->> HDP : ownAsset, error
+' User opens the asset modal
+I -> HDP : editAsset(assetId)
+activate HDP
 
-  opt error != null
-    HDP -> PEA : showError(error)
-    deactivate PEA
-  end
+HDP -> MEA : showModal(alertId)
+activate MEA
+
+'User submits form
+I -> MEA : submit(portofolioId, assetId, quantity)
+activate MEA
+
+MEA -> PC : editPortofolioAsset(portofolioId, assetId, quantity)
+activate PC
+
+'Validation step
+PC -> PC : validate
+activate PC
+deactivate PC
+
+alt invalid input
+  PC -->> MEA : error
+  MEA -->> MEA : showError
+else valid input
+  PC -> PA ** : get(portofolioId, assetId)
+  activate PA
+
+  PA -->> PC : PortofolioAsset
+  deactivate PA
 end
 
-HDP -> PEA : closeModal
-deactivate PEA
+  PC -> PA : update field (quantity)
+  activate PA
+  PA -->> PC : done
+  deactivate PA
+
+  PC -> PA : save
+  activate PA
+  PA -->> PC : return
+  deactivate PA
+
+  PC -->> MEA : PortofolioAsset
+  deactivate PC
+
+  'Update UI and close modal
+  MEA -> HDP : updatePortofolioAssetList
+  activate HDP
+
+  HDP -->> MEA : return
+  deactivate HDP
+
+  MEA -->> MEA : hideModal
+  activate MEA
+  deactivate MEA
+  deactivate MEA
+  deactivate MEA
 
 @enduml

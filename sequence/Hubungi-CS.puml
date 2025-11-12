@@ -4,11 +4,40 @@ hide footbox
 autoactivate on
 
 actor "Investor" as I
-boundary "Halaman Login" as L
-boundary "Button Logout" as BL
-boundary "Modal Konfirmasi Logout" as PKL
+actor "Customer Service" as CS
+boundary "Halaman Dashboard" as HD
+boundary "Tab Customer Service" as TCS
+control "Customer Service Control" as CSC
+entity "ChatSession" as CSess
+entity "ChatMessage" as CM
 
-I -> L
+I -> HD : showCSTab
+
+HD -> TCS : show
+
+TCS -> CSC : getAllMessages(userId)
+
+I -> TCS : send(message)
+
+TCS -> CSC : send(message, userId)
+
+CSC -> CSess ** : getByUserIdOrCreateIfNotAny(userId)
+
+CSess -->> CSC : ChatSession
+
+CSC -> CSess : send(message)
+
+CSess -> CM ** : new ChatMessage(sessionId, message)
+
+CM -->> CSess : ChatMessage
+
+CSess -> CM : save
+
+CM -->> CSess : error
+
+CSess -->> CSC : error
+
+CSC -->> CS : notify
 
 
 @enduml

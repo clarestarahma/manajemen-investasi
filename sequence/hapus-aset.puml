@@ -3,40 +3,63 @@
 skinparam maxMessageSize 250
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Hapus Kepemilikan Aset
+mainframe **Interaction** Hapus Kepemilikan Aset
 
 actor Investor as I
-boundary "Popup Hapus Aset" as PHA
 boundary "Halaman Detail Portofolio" as HDP
+boundary "Popup Hapus Aset" as PHA
 control "Portofolio Control" as PC
-entity "Portofolio" as P
+entity "PortofolioAsset" as PA
+
+ref over I, PA : Lihat Detail Portofolio
 
 I -> HDP : deleteAsset(assetId)
-HDP -> PHA : show
+activate HDP
 
-I -> PHA : confirm/cancel
+HDP -> PHA : showPopup(assetId)
+activate PHA
 
-PHA -> PHA : close
-deactivate PHA
+I -> PHA : confirm
+activate PHA
 
-opt konfirmasi
-  PHA -> HDP : deleteOwnAsset(assetId, portofolioId)
-  HDP -> PC : deleteOwnAsset(assetId, portofolioId)
-  PC -> P : deleteOwnAsset(assetId, portofolioId)
-  P -->> PC : error
-  PC -->> HDP : error
-
-  alt error != null
-    HDP -> HDP : showError(error)
-    deactivate HDP
-  else error = null
-    HDP -> HDP : updateUI
-    deactivate HDP
-  end
+alt cancel
+  PHA -> PHA : hidePopup
+  activate PHA
+  deactivate PHA
+else confirm
+  PHA -> PC : deleteAsset(portofolioId, assetId)
+  activate PC
 end
 
+  PC -> PA ** : get(portofolioId, assetId)
+  activate PA
+
+  alt Asset found
+    PA -->> PC : PortofolioAsset
+  else Asset not found
+    PA -->> PC : error
+    deactivate PA
+    PC -->> PHA : error
+    PHA -> PHA : showError
+    activate PHA
+    deactivate PHA
+  end
+
+  PC -> PA : delete
+  activate PA
+
+  PA -->> PC : return
+  deactivate PA
+
+  PC -->> PHA : return
+
+  PHA -> HDP : updatePortofolioAssetList
+  HDP -->> PHA : return
+
+PHA -> PHA : hidePopup
+activate PHA
+deactivate PHA
 deactivate PHA
 deactivate PHA
 

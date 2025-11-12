@@ -3,41 +3,66 @@
 skinparam maxMessageSize 250
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Hapus Portofolio
+mainframe **Interaction** Hapus Portofolio
 
 actor Investor as I
-boundary "Popup Hapus Portofolio" as PHP
-boundary "Tab Portofolio" as TP
-control "Portofolio Control" as PC
-entity "Portofolio" as P
+boundary "Tab Portofolio" as TPH
+boundary "Popup Hapus Portofolio" as PHPH
+control "Portofolio Control" as PAC
+entity "Portofolio" as PA
 
-I -> TP : deletePortofolio(portofolioId)
-TP -> PHP : show
+ref over I, PA : Lihat Daftar Portofolio
 
-I -> PHP : comfirm/cancel
+I -> TPH : deletePortofolio(id)
+activate TPH
 
-PHP -> PHP : close
-deactivate PHP
+TPH -> PHPH : showPopup(id)
+activate PHPH
 
-opt konfirmasi
-  PHP -> TP : deletePortofolio(portofolioId)
-  TP -> PC : deletePortofolio(portofolioId)
-  PC -> P : deletePortofolio(portofolioId)
-  P -->> PC : error
-  PC -->> TP : error
+I -> PHPH : confirm
+activate PHPH
 
-  alt error != null
-    TP -> TP : showError(error)
-    deactivate TP
-  else error = null
-    TP -> TP : updateUI
-    deactivate TP
-  end
+alt cancel
+  PHPH -> PHPH : hidePopup
+  activate PHPH
+  deactivate PHPH
+else confirm
+  PHPH -> PAC : deletePortofolio(id)
+  activate PAC
 end
 
-deactivate PHP
-deactivate PHP
+  PAC -> PA ** : get(id)
+  activate PA
+
+  alt Price alert found
+    PA -->> PAC : Portofolio
+  else Price alert not found
+    PA -->> PAC : error
+    deactivate PA
+    PAC -->> PHPH : error
+    PHPH -> PHPH : showError
+    activate PHPH
+    deactivate PHPH
+  end
+
+  PAC -> PA : delete
+  activate PA
+
+  PA -->> PAC : return
+  deactivate PA
+
+  PAC -->> PHPH : return
+
+  PHPH -> TPH : updatePortofolioList
+  TPH -->> PHPH : return
+
+PHPH -> PHPH : hidePopup
+activate PHPH
+deactivate PHPH
+deactivate PHPH
+deactivate PHPH
+
+
 
 @enduml

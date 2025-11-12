@@ -1,37 +1,70 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-
 hide footbox
-autoactivate on
 
-mainframe **sd** Buat Portofolio
+mainframe **Interaksi** Buat Portofolio
 
 actor Investor as I
-boundary "Modal Buat Portofolio" as PBP
 boundary "Tab Portofolio" as TP
+boundary "Modal Buat Portofolio" as MBP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
 ref over I, P : Lihat Daftar Portofolio
 
-I -> TP : buatPortofolio
-TP -> PBP : tampilkan
+' User opens the portofolio modal
+I -> TP : createPortofolio
+activate TP
 
-loop error != null
-  I -> PBP : submit
-  PBP -> TP : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
-  TP -> PC : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
-  PC -> P : buatPortofolio(nama, mataUang, saldoTunai, idInvestor)
-  P -->> PC : Portofolio, error
-  PC -->> TP : Portofolio, error
+TP -> MBP : showModal
+activate MBP
 
-  opt error != null
-    TP -> PBP : tampilkanError(error)
-    deactivate PBP
-  end
+'User submits form
+I -> MBP : submit(name, currency, cashBalance)
+activate MBP
+
+MBP -> PC : createPortofolio(name, currency, cashBalance)
+activate PC
+
+'Validation step
+PC -> PC : validate
+activate PC
+deactivate PC
+
+alt invalid input
+  PC -->> MBP : error
+  MBP -->> MBP : showError
+else valid input
+  'Create and save the Portofolio entity
+  PC -> P ** : create(userId, name, currency, cashBalance)
+  activate P
+  P -->> PC : Portofolio
+  deactivate P
+
+  PC -> P : save
+  activate P
+  P -> P : update fields (id)
+  activate P
+  deactivate P
+  P -->> PC : return
+  deactivate P
+
+  PC -->> MBP : Portofolio
+  deactivate PC
+
+  'Update UI and close modal
+  MBP -> TP : updatePortofolioList
+  activate TP
+
+  TP -->> MBP : return
+  deactivate TP
+
+  MBP -->> MBP : hideModal
+  activate MBP
+  deactivate MBP
+  deactivate MBP
+  deactivate MBP
 end
 
-TP -> PBP : tutupModal
-deactivate PBP
 @enduml

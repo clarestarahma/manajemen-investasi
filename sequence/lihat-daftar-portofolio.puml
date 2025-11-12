@@ -13,16 +13,16 @@ entity "Portofolio" as P
 
 I -> HD : openPortofolio
 HD -> TP : show
-TP -> PC : getAllPortofolio(userId)
-PC -> P : getAll(userId)
-P -->> PC : portofolioList
-PC -->> TP : portofolioList
+TP -> PC : getPortofolioByUserId(userId)
+PC -> P ** : getByUserId(userId)
+P -->> PC : Portofolio[]
+PC -->> TP : Portofolio[]
 
 alt portofolioList.length = 0
-  TP -> TP : tampilkanPesan
+  TP -> TP : showPlaceholderText
   deactivate TP
 else portofolioList.length > 0
-  TP -> TP : tampilkanPortofolio
+  TP -> TP : showPortofolioList
   deactivate TP
 end
 

@@ -3,40 +3,63 @@
 skinparam maxMessageSize 250
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Hapus Peringatan Harga
+mainframe **Interaction** Hapus Peringatan Harga
 
 actor Investor as I
-boundary "Popup Hapus Peringatan Harga" as PHPH
 boundary "Tab Peringatan Harga" as TPH
-control "Peringatan Harga Control" as PHC
-entity "Peringatan Harga" as PH
+boundary "Popup Hapus Peringatan Harga" as PHPH
+control "Price Alert Control" as PAC
+entity "PriceAlert" as PA
 
-I -> TPH : deleteAsset(alertId)
-TPH -> PHPH : show
+ref over I, PA : Lihat Daftar Peringatan Harga
 
-I -> PHPH : confirm/cancel
+I -> TPH : deletePriceAlert(id)
+activate TPH
 
-PHPH -> PHPH : close
-deactivate PHPH
+TPH -> PHPH : showPopup(id)
+activate PHPH
 
-opt konfirmasi
-  PHPH -> TPH : deletePriceAlert(alertId)
-  TPH -> PHC : deletePriceAlert(alertId)
-  PHC -> PH : deletePriceAlert(alertId)
-  PH -->> PHC : error
-  PHC -->> TPH : error
+I -> PHPH : confirm
+activate PHPH
 
-  alt error != null
-    TPH -> TPH : showError(error)
-    deactivate TPH
-  else error = null
-    TPH -> TPH : updateUI
-    deactivate TPH
-  end
+alt cancel
+  PHPH -> PHPH : hidePopup
+  activate PHPH
+  deactivate PHPH
+else confirm
+  PHPH -> PAC : deletePriceAlert(id)
+  activate PAC
 end
 
+  PAC -> PA ** : get(id)
+  activate PA
+
+  alt Price alert found
+    PA -->> PAC : PriceAlert
+  else Price alert not found
+    PA -->> PAC : error
+    deactivate PA
+    PAC -->> PHPH : error
+    PHPH -> PHPH : showError
+    activate PHPH
+    deactivate PHPH
+  end
+
+  PAC -> PA : delete
+  activate PA
+
+  PA -->> PAC : return
+  deactivate PA
+
+  PAC -->> PHPH : return
+
+  PHPH -> TPH : updatePriceAlertList
+  TPH -->> PHPH : return
+
+PHPH -> PHPH : hidePopup
+activate PHPH
+deactivate PHPH
 deactivate PHPH
 deactivate PHPH
 
