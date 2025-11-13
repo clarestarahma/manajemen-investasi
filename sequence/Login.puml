@@ -30,9 +30,14 @@ alt invalid
   activate FL
   deactivate FL
 else valid
-  AC -> User ** : login(email, password)
+  AC -> User ** : getByEmail(email)
   activate User
 end
+
+AC -> User : login(password)
+User -> User : hash(password)
+activate User
+deactivate User
 
 alt failed
   User -->> AC : error
@@ -42,15 +47,17 @@ alt failed
   activate FL
   deactivate FL
 else success
+
   User -> User : createOTP
   activate User
   deactivate User
 
-  User -->> AC : User
-  deactivate User
 end
 
-AC -->> FL : userId
+User -->> AC : User
+deactivate User
+
+AC -->> FL : id
 deactivate AC
 
 FL -> FOTP : show
@@ -58,10 +65,10 @@ deactivate FL
 activate FOTP
 
 Pengguna -->> FOTP : submit(otp)
-FOTP -> AC : verifyOTP(userId, otp)
+FOTP -> AC : verifyOTP(id, otp)
 activate AC
 
-AC -> User2 ** : get(userId)
+AC -> User2 ** : get(id)
 activate User2
 
 User2 -->> AC : User
@@ -70,7 +77,7 @@ deactivate User2
 AC -> User2 : verifyOTP(otp)
 activate User2
 
-User2 -> UOTP ** : getByUserId(userId)
+User2 -> UOTP ** : getByUserId(id)
 activate UOTP
 UOTP -->> User2 : UserOTP
 deactivate UOTP

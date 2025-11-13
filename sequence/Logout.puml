@@ -3,12 +3,27 @@
 hide footbox
 autoactivate on
 
-actor "Investor"
-boundary "Button Logout" as BL
-boundary "Modal Konfirmasi Logout" as PKL
-control "Auth Control" as AC
-entity "Auth Service" as ASR
-entity "" as user
+actor "Investor" as I
+boundary "Tombol Logout" as TL
+boundary "Popup Konfirmasi Logout" as PKL
+boundary "Halaman Login" as HL
+
+I -> TL : logout
+
+TL -> PKL : showPopup
+deactivate TL
+
+PKL -> PKL : hidePopup
+deactivate PKL
+
+I -> PKL : confirm
+
+opt confirm
+  PKL -> HL : show
+end
+
+deactivate PKL
+deactivate PKL
 
 
 @enduml
