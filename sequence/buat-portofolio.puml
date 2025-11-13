@@ -41,6 +41,7 @@ else valid input
   activate P
   P -->> PC : Portofolio
   deactivate P
+end
 
   PC -> P : save
   activate P
@@ -65,6 +66,5 @@ else valid input
   deactivate MBP
   deactivate MBP
   deactivate MBP
-end
 
 @enduml
