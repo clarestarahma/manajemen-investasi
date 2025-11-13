@@ -1,43 +1,119 @@
 @startuml
 
 hide footbox
-autoactivate on
+
+mainframe **Interaksi** Hubungi CS
 
 actor "Investor" as I
 actor "Customer Service" as CS
 boundary "Halaman Dashboard" as HD
 boundary "Tab Customer Service" as TCS
 control "Customer Service Control" as CSC
-entity "ChatSession" as CSess
+entity "ChatSession" as CSess0
 entity "ChatMessage" as CM
+entity "ChatSession" as CSess
+entity "ChatMesage" as CM2
 
 I -> HD : showCSTab
+activate HD
 
 HD -> TCS : show
+activate TCS
+deactivate HD
 
-TCS -> CSC : getAllMessages(userId)
+' Get session
+TCS -> CSC : getSession(userId)
+activate CSC
+
+CSC -> CSess0 ** : getByUserId(userId)
+activate CSess0
+alt chat session found
+  CSess0 -->> CSC : ChatSession
+  CSC -->> TCS : chatSession (sessionId)
+else chat session not found
+  CSess0 -->> CSC : null
+  CSC -->> TCS : null
+  deactivate CSess0
+  deactivate CSC
+end
+
+' Get all messages
+opt chat session found
+  TCS -> CSC : getAllMessages(sessionId)
+  activate CSC
+
+  CSC -> CM ** : getBySessionId(sessionId)
+  activate CM
+
+  CM -->> CSC : ChatMessage[]
+  deactivate CM
+
+  CSC -->> TCS : ChatMessage[]
+  deactivate CSC
+
+  TCS -> TCS : showMessages
+  activate TCS
+  deactivate TCS
+end
+
 
 I -> TCS : send(message)
+activate TCS
 
-TCS -> CSC : send(message, userId)
+' Open session
+opt chat session not found
+  TCS -> CSC : openSession(userId)
+  activate CSC
 
-CSC -> CSess ** : getByUserIdOrCreateIfNotAny(userId)
+  CSC -> CSC : getCSId
+  activate CSC
+  deactivate CSC
 
-CSess -->> CSC : ChatSession
+  CSC -> CSess ** : new ChatSession(userId, csId)
+  activate  CSess
 
-CSC -> CSess : send(message)
+  CSess -->> CSC : ChatSession (sessionId)
+  deactivate CSess
 
-CSess -> CM ** : new ChatMessage(sessionId, message)
+  CSC -> CSess : save
+  activate CSess
+  CSess -> CSess : update fields (sessionId)
+  activate CSess
+  deactivate CSess
+  CSess -->> CSC : return
+  deactivate CSess
 
-CM -->> CSess : ChatMessage
+  CSC ->> CS : notify
+  CSC -->> TCS : chatSession (sessionId)
+  deactivate CSC
+end
 
-CSess -> CM : save
 
-CM -->> CSess : error
+' Send message
+TCS -> CSC : sendMessage(sessionId, message)
+activate CSC
 
-CSess -->> CSC : error
+CSC -> CM2 ** : new ChatMessage(sessionId, message)
+activate CM2
+CM2 -->> CSC : ChatMessage
+deactivate CM2
 
-CSC -->> CS : notify
+CSC -> CM2 : save
+activate CM2
+CM2 -->> CSC : return
+deactivate CM2
+
+CSC ->> CS : notify
+
+CSC -->> TCS : chatMessage
+deactivate CSC
+
+TCS -> TCS : updateMessages
+activate TCS
+deactivate TCS
+deactivate TCS
+
+
 
 
 @enduml

@@ -3,6 +3,8 @@
 hide footbox
 autoactivate on
 
+mainframe **Interaksi** Logout
+
 actor "Investor" as I
 boundary "Tombol Logout" as TL
 boundary "Popup Konfirmasi Logout" as PKL
@@ -13,10 +15,11 @@ I -> TL : logout
 TL -> PKL : showPopup
 deactivate TL
 
+I -> PKL : confirm
+
 PKL -> PKL : hidePopup
 deactivate PKL
 
-I -> PKL : confirm
 
 opt confirm
   PKL -> HL : show
