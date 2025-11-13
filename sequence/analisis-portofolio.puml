@@ -33,9 +33,14 @@ else portfolio not found
   PC -->> PAP : error
 end
 
+
 ' Retrieve analysis data if portfolio retrieval succeeded
 PC -> P : getAnalysis(portfolioId)
 activate P
+
+P -> P : analyze
+activate P
+deactivate P
 
 P -> PA  ** : getByPortfolioId(portfolioId)
 activate PA

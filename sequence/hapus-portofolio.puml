@@ -35,9 +35,9 @@ end
   PAC -> PA ** : get(id)
   activate PA
 
-  alt Price alert found
+  alt Portofolio found
     PA -->> PAC : Portofolio
-  else Price alert not found
+  else Portofolio not found
     PA -->> PAC : error
     deactivate PA
     PAC -->> PHPH : error
@@ -55,7 +55,10 @@ end
   PAC -->> PHPH : return
 
   PHPH -> TPH : updatePortofolioList
+  activate TPH
+
   TPH -->> PHPH : return
+  deactivate TPH
 
 PHPH -> PHPH : hidePopup
 activate PHPH

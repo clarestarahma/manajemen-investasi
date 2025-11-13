@@ -65,7 +65,7 @@ end
   HDP -->> MEP : return
   deactivate HDP
 
-  MEP -->> MEP : hideModal
+  MEP -> MEP : hideModal
   activate MEP
   deactivate MEP
   deactivate MEP

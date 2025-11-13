@@ -34,7 +34,7 @@ deactivate PAC
 
 alt invalid input
   PAC -->> MBPH : error
-  MBPH -->> MBPH : showError
+  MBPH -> MBPH : showError
 else valid input
   'Create and save the PriceAlert entity
   PAC -> PA ** : create(userId, asset, currency, priceTarget)

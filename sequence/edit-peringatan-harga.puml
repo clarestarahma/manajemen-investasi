@@ -34,7 +34,7 @@ deactivate PAC
 
 alt invalid input
   PAC -->> MEPH : error
-  MEPH -->> MEPH : showError
+  MEPH -> MEPH : showError
 else valid input
   PAC -> PA ** : get(id)
   activate PA
@@ -43,31 +43,31 @@ else valid input
   deactivate PA
 end
 
-  PAC -> PA : update field (priceTarget)
-  activate PA
+PAC -> PA : update field (priceTarget)
+activate PA
 
-  PA -->> PAC : done
-  deactivate PA
+PA -->> PAC : done
+deactivate PA
 
-  PAC -> PA : save
-  activate PA
-  PA -->> PAC : return
-  deactivate PA
+PAC -> PA : save
+activate PA
+PA -->> PAC : return
+deactivate PA
 
-  PAC -->> MEPH : priceAlert
-  deactivate PAC
+PAC -->> MEPH : priceAlert
+deactivate PAC
 
-  'Update UI and close modal
-  MEPH -> HDP : updatePriceAlertList
-  activate HDP
+'Update UI and close modal
+MEPH -> HDP : updatePriceAlertList
+activate HDP
 
-  HDP -->> MEPH : return
-  deactivate HDP
+HDP -->> MEPH : return
+deactivate HDP
 
-  MEPH -->> MEPH : hideModal
-  activate MEPH
-  deactivate MEPH
-  deactivate MEPH
-  deactivate MEPH
+MEPH -->> MEPH : hideModal
+activate MEPH
+deactivate MEPH
+deactivate MEPH
+deactivate MEPH
 
 @enduml
