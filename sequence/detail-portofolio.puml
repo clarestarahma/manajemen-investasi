@@ -1,43 +1,40 @@
 @startuml Sequence
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Detail Portofolio
+mainframe **Interaksi** Detail Portofolio
 
 actor Investor as I
-boundary "Halaman Dashboard" as HD
 boundary "Tab Portofolio" as TP
 boundary "Halaman Detail Portofolio" as HDP
-control "Portofolio Control" as PC
+control "Porotofolio Control" as PC
 entity "Portofolio" as P
 
-I -> HD : showPortofolioTab
+I -> TP : showPortofolioDetail(id)
+activate TP
 
-HD -> TP : show
-
-deactivate HD
-
-I -> TP : showPortofolioDetail(idPortofolio)
-TP -> HDP : show(idPortofolio)
-
-deactivate TP
+TP -> HDP : show(id)
+activate HDP
 deactivate TP
 
-HDP -> PC : getPortofolio(idPortofolio) 
+HDP -> PC : getPortofolio(id)
+activate PC
 
-PC -> P : getPortofolio(idPortofolio)
+PC -> P ** : get(id)
+activate P
 
-P -->> PC : Portofolio, error
+alt portofolio found
+  P -->> PC : portofolio
+  PC -->> HDP : portofolio
+  HDP -> HDP : showPortofolio
+else portofolio not found
+  P -->> PC : error
+  deactivate P
 
-PC -->> HDP : Portofolio, error
+  PC -->> HDP : error
+  deactivate PC
 
-alt error != null
-  HDP -> HDP : updateUI
-  deactivate HDP
-else error = null
-  HDP -> HDP : showError(error)
-  deactivate HDP
+  HDP -> HDP : showError
 end
 
 @enduml

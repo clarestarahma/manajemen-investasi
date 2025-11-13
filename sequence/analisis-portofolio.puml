@@ -1,36 +1,61 @@
 @startuml Sequence
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Analisis Portofolio
+mainframe **Interaksi** Analisis Portofolio
 
 actor Investor as I
-boundary "Halaman Detail Portofolio" as HDP
-boundary "Halaman Analisis Portofolio" as HAP
-control "Portofolio Control" as PC
-entity "Portofolio" as P
+boundary "Halaman Detail Portofolio" as PDP
+boundary "Halaman Analisis Portofolio" as PAP
+control "Portfolio Control" as PC
+entity "Portfolio" as P
+entity "PortfolioAnalysis" as PA
 
-I -> HDP : showPortofolioAnalysis(portofolioId)
+' User initiates analysis from detail page
+I -> PDP : showPortfolioAnalysis(portfolioId)
+activate PDP
 
-HDP -> HAP : show(portofolioId)
+PDP -> PAP : show(portfolioId)
+activate PAP
+deactivate PDP
 
-deactivate HDP
+' Control layer retrieves portfolio data
+PAP -> PC : getPortfolioAnalysis(portfolioId)
+activate PC
 
-HAP -> PC : getByPortofolioId(portofolioId)
+PC -> P ** : get(portfolioId)
+activate P
 
-PC -> P : getByPortofolioId(portofolioId)
-
-P -->> PC : portofolioAnalysis, error
-
-PC -->> HAP : portofolioAnalysis, error
-
-alt error != null
-  HAP -> HAP : show Analysis
-  deactivate HAP
-else error = null
-  HAP -> HAP : showError
-  deactivate HAP
+alt portfolio found
+  P -->> PC : Portfolio
+else portfolio not found
+  P -->> PC : error
+  PC -->> PAP : error
 end
+
+
+' Retrieve analysis data if portfolio retrieval succeeded
+PC -> P : getAnalysis(portfolioId)
+activate P
+
+P -> P : analyze
+activate P
+deactivate P
+
+P -> PA  ** : getByPortfolioId(portfolioId)
+activate PA
+
+PA -->> P : PortfolioAnalysis[]
+deactivate PA
+
+P -->> PC : PortfolioAnalysis[]
+deactivate P
+
+PC -->> PAP : PortfolioAnalysis[]
+deactivate PC
+
+PAP -> PAP : showAnalysis()
+activate PAP
+deactivate PAP
 
 @enduml

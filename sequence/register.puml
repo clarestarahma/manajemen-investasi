@@ -1,49 +1,109 @@
 @startuml Sequence
 
 hide footbox
-autoactivate on
 
-mainframe **sd** Register
+mainframe **Interaksi** Register
 
 actor "Pengguna"
-boundary "Form Registrasi" as FR
+boundary "Form Register" as FR
 boundary "Form OTP" as FOTP
-boundary "Halaman Login" as HL
+boundary "Halaman Login" as HD
 control "Auth Control" as AC
 ' entity "Auth Service" as ASR
-entity "User" as user
+entity "User" as User
+entity "User" as User2
+entity "UserOTP" as UOTP
 
-loop registerStatus = false
-    Pengguna -> FR: submit
-    FR -> FR: registerStatus = check 
-    deactivate FR
+Pengguna -> FR : submit(email, passoword)
+activate FR
 
-    opt registerStatus = false
-        FR -> FR: showError
-        deactivate FR
-    end
-end 
+FR -> AC : register(email, password)
+activate AC
 
-FR -> AC : register(email, pass)
-AC -> user : create(email, pass)
-user -->> AC : userStatus
+AC -> AC : validate
+activate AC
+deactivate AC
 
-alt userStatus = false
-    AC -> FR : showError
-    deactivate FR  
-else userStatus = true 
-    AC -> FOTP : show
-    deactivate FOTP
+alt invalid
+  AC -->> FR : error
+  FR -> FR : showError
+  activate FR
+  deactivate FR
+else valid
+  AC -> User ** : new User(email, password)
+  activate User
+  User -->> AC : User
+  deactivate User
 end
-    loop otpStatus = false
-        Pengguna -> FOTP: submit
-        FOTP -> FOTP: otpStatus = check
-        deactivate FOTP
-    end
-        opt otpStatus = false
-            FOTP -> FOTP: showError
-        end
+
+  AC -> User : save
+  activate User
+
+  User -> User : hash(password)
+  activate User
+  deactivate User
+
+alt failed
+  User -->> AC : error
+
+  AC -->> FR : error
+  FR -> FR : showError
+  activate FR
+  deactivate FR
+else success
+  User -> User : createOTP
+  activate User
+  deactivate User
+
+end
+
+User -> User : update fields (id)
+activate User 
+deactivate User
+
+User -->> AC : return
+deactivate User
+
+AC -->> FR : id
+deactivate AC
+
+FR -> FOTP : show
+deactivate FR
+activate FOTP
+
+Pengguna -->> FOTP : submit(otp)
+FOTP -> AC : verifyOTP(id, otp)
+activate AC
+
+AC -> User2 ** : get(id)
+activate User2
+
+User2 -->> AC : User
+deactivate User2
+
+AC -> User2 : verifyOTP(otp)
+activate User2
+
+User2 -> UOTP ** : getByUserId(id)
+activate UOTP
+UOTP -->> User2 : UserOTP
+deactivate UOTP
+
+User2 -->> AC : isCorrect
+deactivate User2
+
+AC -->> FOTP : isCorrect
+
+alt isCorrect = false
+  FOTP -> FOTP : showError
+  activate FOTP
+  deactivate FOTP
+else isCorrect = true
+  FOTP -> HD : show
+  deactivate FOTP
+  activate HD 
+end
+
 
 
 @enduml
-

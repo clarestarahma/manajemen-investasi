@@ -1,14 +1,119 @@
 @startuml
 
 hide footbox
-autoactivate on
+
+mainframe **Interaksi** Hubungi CS
 
 actor "Investor" as I
-boundary "Halaman Login" as L
-boundary "Button Logout" as BL
-boundary "Modal Konfirmasi Logout" as PKL
+actor "Customer Service" as CS
+boundary "Halaman Dashboard" as HD
+boundary "Tab Customer Service" as TCS
+control "Customer Service Control" as CSC
+entity "ChatSession" as CSess0
+entity "ChatMessage" as CM
+entity "ChatSession" as CSess
+entity "ChatMesage" as CM2
 
-I -> L
+I -> HD : showCSTab
+activate HD
+
+HD -> TCS : show
+activate TCS
+deactivate HD
+
+' Get session
+TCS -> CSC : getSession(userId)
+activate CSC
+
+CSC -> CSess0 ** : getByUserId(userId)
+activate CSess0
+alt chat session found
+  CSess0 -->> CSC : ChatSession
+  CSC -->> TCS : chatSession (sessionId)
+else chat session not found
+  CSess0 -->> CSC : null
+  CSC -->> TCS : null
+  deactivate CSess0
+  deactivate CSC
+end
+
+' Get all messages
+opt chat session found
+  TCS -> CSC : getAllMessages(sessionId)
+  activate CSC
+
+  CSC -> CM ** : getBySessionId(sessionId)
+  activate CM
+
+  CM -->> CSC : ChatMessage[]
+  deactivate CM
+
+  CSC -->> TCS : ChatMessage[]
+  deactivate CSC
+
+  TCS -> TCS : showMessages
+  activate TCS
+  deactivate TCS
+end
+
+
+I -> TCS : send(message)
+activate TCS
+
+' Open session
+opt chat session not found
+  TCS -> CSC : openSession(userId)
+  activate CSC
+
+  CSC -> CSC : getCSId
+  activate CSC
+  deactivate CSC
+
+  CSC -> CSess ** : new ChatSession(userId, csId)
+  activate  CSess
+
+  CSess -->> CSC : ChatSession (sessionId)
+  deactivate CSess
+
+  CSC -> CSess : save
+  activate CSess
+  CSess -> CSess : update fields (sessionId)
+  activate CSess
+  deactivate CSess
+  CSess -->> CSC : return
+  deactivate CSess
+
+  CSC ->> CS : notify
+  CSC -->> TCS : chatSession (sessionId)
+  deactivate CSC
+end
+
+
+' Send message
+TCS -> CSC : sendMessage(sessionId, message)
+activate CSC
+
+CSC -> CM2 ** : new ChatMessage(sessionId, message)
+activate CM2
+CM2 -->> CSC : ChatMessage
+deactivate CM2
+
+CSC -> CM2 : save
+activate CM2
+CM2 -->> CSC : return
+deactivate CM2
+
+CSC ->> CS : notify
+
+CSC -->> TCS : chatMessage
+deactivate CSC
+
+TCS -> TCS : updateMessages
+activate TCS
+deactivate TCS
+deactivate TCS
+
+
 
 
 @enduml
