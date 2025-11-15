@@ -1,0 +1,21 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+hide footbox
+
+mainframe **Interaksi** Tambah Kepemilikan Aset
+
+actor Investor as I
+participant "p : Portofolio" as P
+participant "a : Asset" as A
+participant "pa : PortofolioAsset" as PA
+
+I -> P** : get(portofolioId)
+P-->>I : p : Portofolio
+I -> A** : get(assetId)
+P-->>I : a : Asset
+I -> P : addAsset(a, quantity)
+P -> PA** : create(a, quantity)
+P -> PA :  save()
+
+@enduml
