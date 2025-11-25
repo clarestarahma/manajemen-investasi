@@ -1,0 +1,9 @@
+services: 
+  database: 
+    image: postgres:18
+    environment:
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=marketguardian
+    ports:
+      - 5432:5432

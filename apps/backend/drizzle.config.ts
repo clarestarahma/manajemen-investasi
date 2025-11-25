@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-import { createConfig } from "@/shared/config/config.js";
+import { createConfig } from "@/shared/config/config";
 
 const config = createConfig();
 
@@ -9,4 +9,5 @@ export default defineConfig({
   dbCredentials: {
     url: config.databaseUrl,
   },
+  casing: "snake_case"
 });

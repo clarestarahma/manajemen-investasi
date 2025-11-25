@@ -1,5 +1,5 @@
-import { createRouter } from "@/shared/utils/create-router.js";
-import { AssetController } from "./asset.controller.js";
+import { createRouter } from "@/shared/utils/create-router";
+import { AssetController } from "./asset.controller";
 
 export function createAssetRouter(controller: AssetController) {
   return createRouter();

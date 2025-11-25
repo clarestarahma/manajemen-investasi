@@ -4,7 +4,10 @@ import { createRoute } from "@hono/zod-openapi";
 import {
   createPortfolioRequestSchema,
   createPortfolioResponseSchema,
-} from "./portfolio.schema.js";
+  getPortofolioRequestScheme,
+  getPortofolioResponseSchema,
+} from "./portfolio.schema";
+import z from "zod";
 
 const tags = ["Portfolios"];
 
@@ -25,3 +28,18 @@ export const create = createRoute({
     ),
   },
 });
+
+export const get = createRoute({
+  path : "/:id",
+  method : "get",
+  request: {
+    params: getPortofolioRequestScheme
+  },
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      getPortofolioResponseSchema,
+      "Portofolio with matching ID"
+    )
+  }
+})

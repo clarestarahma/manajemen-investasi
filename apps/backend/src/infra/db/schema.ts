@@ -13,7 +13,7 @@ export const portfolio = pgTable(
     id: uuid().defaultRandom().primaryKey(),
     name: text().notNull(),
     userId: text().notNull(),
-    cashBalance: text().notNull(),
+    cashBalance:  doublePrecision().notNull(),
     baseCurrency: text().notNull(),
   },
   (t) => [uniqueIndex().on(t.userId, t.name)]
@@ -25,7 +25,7 @@ export const portfolioRelations = relations(portfolio, ({ many }) => ({
 
 export const portfolioAsset = pgTable("portfolio_asset", {
   portofolioId: uuid().defaultRandom().primaryKey(),
-  userId: uuid().notNull(),
+  assetId: text().notNull(),
   quantity: doublePrecision().notNull(),
 });
 
@@ -35,7 +35,7 @@ export const portfolioAssetRelations = relations(portfolioAsset, ({ one }) => ({
     references: [portfolio.id],
   }),
   asset: one(asset, {
-    fields: [portfolioAsset.portofolioId],
+    fields: [portfolioAsset.assetId],
     references: [asset.id],
   }),
 }));

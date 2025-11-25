@@ -1,16 +1,18 @@
 import { Scalar } from "@scalar/hono-api-reference";
 import { requestId } from "hono/request-id";
 import { pinoLogger } from "hono-pino";
-import { createConfig } from "./shared/config/config.js";
-import { createLogger } from "./infra/logger/logger.js";
+import { createConfig } from "./shared/config/config";
+import { createLogger } from "./infra/logger/logger";
 import { notFound, onError } from "stoker/middlewares";
-import packageJSON from "../package.json" with { type: "json" };
-import { createRouter } from "./shared/utils/create-router.js";
-import { PortfolioController } from "./portfolio/portfolio.controller.js";
-import { createPortfolioRouter } from "./portfolio/portfolio.router.js";
-import { AssetController } from "./assets/asset.controller.js";
-import { createAssetRouter } from "./assets/asset.router.js";
-import { MassiveClient } from "./infra/vendors/massive/massive-client.js";
+import packageJSON from "../package.json";
+import { createRouter } from "./shared/utils/create-router";
+import { PortfolioController } from "./portfolio/portfolio.controller";
+import { createPortfolioRouter } from "./portfolio/portfolio.router";
+
+import { MassiveClient } from "./infra/vendors/massive/massive-client";
+import { AssetController } from "./assets/asset.controller";
+import { createAssetRouter } from "./assets/asset.router";
+import { createDb } from "./infra/db/db";
 const app = createRouter();
 
 app.use(requestId())
@@ -29,14 +31,16 @@ app.use(pinoLogger({ pino: logger }));
 const massive = new MassiveClient();
 massive.startIngestion();
 
+
+const db = createDb(config);
 // portfolios router
-const portfolioController = new PortfolioController()
+const portfolioController = new PortfolioController(db, logger)
 const portfolioRouter = createPortfolioRouter(portfolioController)
 app.route("/portfolios", portfolioRouter)
 
-// assets router
-const assetController = new AssetController()
-const assetRouter = createAssetRouter(assetController)
+// asset router
+const assetController = new AssetController();
+const assetRouter = createAssetRouter(assetController);
 app.route("/assets", assetRouter)
 
 // OpenAPI

@@ -1,4 +1,4 @@
-import type { OHLCV } from "./entities/ohlcv.js";
+import type { OHLCV } from "./entities/ohlcv";
 import { v4 as uuidv4 } from "uuid";
 
 export class Asset {

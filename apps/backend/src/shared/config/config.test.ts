@@ -1,5 +1,5 @@
 import { describe, test, should, expect } from "vitest";
-import { createConfig } from "./config.js";
+import { createConfig } from "./config";
 import { title } from "process";
 
 describe("Config", () => {
