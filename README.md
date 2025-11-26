@@ -3,6 +3,7 @@
 ## Cara Run
 
 ```bash
+cd apps/backend/
 docker compose up -d
 npx drizzle-kit migrate
 npm run dev
