@@ -1,4 +1,6 @@
 import z from "zod";
+import { createMessageObjectSchema } from "stoker/openapi/schemas"
+import * as HttpStatusPhrases from "stoker/http-status-phrases"
 
 export const portfolioSchema = z.object({
   id: z.uuidv4(),
@@ -44,5 +46,9 @@ export type GetPortofolioResponse = z.infer<
 >;
 
 export const getPortofolioResponseSchema = z.object({
-  portofolio: portfolioSchema
+  portfolio: portfolioSchema
 })
+
+export const notFoundSchema = createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND)
+
+export type NotFound = z.infer<typeof notFoundSchema>

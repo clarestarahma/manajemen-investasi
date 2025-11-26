@@ -3,11 +3,14 @@ import type { Context, TypedResponse } from "hono";
 import type {
   CreatePortfolioRequest,
   CreatePortfolioResponse,
+  GetPortofolioRequest,
   GetPortofolioResponse,
+  NotFound,
 } from "./portfolio.schema";
 import { Portfolio } from "./portofolio";
 import { Database } from "@/infra/db/db";
 import { Logger } from "@/infra/logger/logger";
+import * as HttpStatusPhrases from "stoker/http-status-phrases"
 export class PortfolioController {
   private db: Database
   private logger: Logger
@@ -52,19 +55,25 @@ export class PortfolioController {
   }
 
   // id
-  async getPortfolio(c: Context): Promise<TypedResponse<GetPortofolioResponse, 200, "json">> {
-    const id = c.req.param("id");
+  async getPortfolio(c: Context): Promise<TypedResponse<GetPortofolioResponse, 200, "json"> | TypedResponse<NotFound, 404, "json">> {
+    const body = await c.req.json();
+    const id = body.userId;
+    const portfolio: Portfolio | null = await Portfolio.get(this.db, id);
+
+    if( !portfolio ){
+      return c.json({
+        message: HttpStatusPhrases.NOT_FOUND
+      }, HttpStatusCodes.NOT_FOUND)
+    }
+
     return c.json({
-      portofolio: {
-        id: id,
-        name: "blabla",
-        userId: id,
-        baseCurrency: "IDR",
-        cashBalance: 1,
+      portfolio: {
+        id: portfolio.id!,
+        name: portfolio.name,
+        userId: portfolio.userId,
+        baseCurrency: portfolio.baseCurrency,
+        cashBalance: portfolio.cashBalance,
       }
     }, HttpStatusCodes.OK)
   }
-
-  // portofolioId, assetId, quantity
-  async addAsset(c: Context) {}
 }

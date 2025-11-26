@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { PortfolioAsset } from "./entities/portofolio-asset";
 import type { Database } from "@/infra/db/db";
 import { eq } from "drizzle-orm";

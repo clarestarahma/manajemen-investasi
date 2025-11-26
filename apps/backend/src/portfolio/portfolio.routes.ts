@@ -6,8 +6,8 @@ import {
   createPortfolioResponseSchema,
   getPortofolioRequestScheme,
   getPortofolioResponseSchema,
+  notFoundSchema,
 } from "./portfolio.schema";
-import z from "zod";
 
 const tags = ["Portfolios"];
 
@@ -40,6 +40,10 @@ export const get = createRoute({
     [HttpStatusCodes.OK]: jsonContent(
       getPortofolioResponseSchema,
       "Portofolio with matching ID"
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      notFoundSchema, 
+      "Portofolio not found"
     )
   }
 })
