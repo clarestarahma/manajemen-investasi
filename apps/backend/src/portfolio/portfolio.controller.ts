@@ -3,7 +3,6 @@ import type { Context, TypedResponse } from "hono";
 import type {
   CreatePortfolioRequest,
   CreatePortfolioResponse,
-  GetPortofolioRequest,
   GetPortofolioResponse,
   NotFound,
 } from "./portfolio.schema";
@@ -55,9 +54,10 @@ export class PortfolioController {
   }
 
   // id
-  async getPortfolio(c: Context): Promise<TypedResponse<GetPortofolioResponse, 200, "json"> | TypedResponse<NotFound, 404, "json">> {
-    const body = await c.req.json();
-    const id = body.userId;
+  async getPortfolio(
+    c: Context
+  ): Promise<TypedResponse<GetPortofolioResponse, 200, "json"> | TypedResponse<NotFound, 404, "json">> {
+    const id = await c.req.param("id");
     const portfolio: Portfolio | null = await Portfolio.get(this.db, id);
 
     if( !portfolio ){
