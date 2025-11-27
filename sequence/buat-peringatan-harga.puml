@@ -1,12 +1,13 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-hide footbox
 
-mainframe **Interaksi** Buat Peringatan Harga
+hide footbox
+autoactivate on
+
+mainframe **sd** Buat Peringatan Harga
 
 actor Investor as I
-boundary "Tab Peringatan Harga" as TPH
 boundary "Modal Buat Peringatan Harga" as MBPH
 control "Price Alert Control" as PAC
 entity "PriceAlert" as PA
@@ -37,34 +38,12 @@ alt invalid input
   MBPH -> MBPH : showError
 else valid input
   'Create and save the PriceAlert entity
-  PAC -> PA ** : create(userId, asset, currency, priceTarget)
+  PAC -> PA ** : new PriceAlert(userId, asset, currency, priceTarget)
   activate PA
   PA -->> PAC : PriceAlert
   deactivate PA
 end
 
-  PAC -> PA : save
-  activate PA
-  PA -> PA : update fields (id)
-  activate PA
-  deactivate PA
-  PA -->> PAC : return
-  deactivate PA
-
-  PAC -->> MBPH : PriceAlert
-  deactivate PAC
-
-  'Update UI and close modal
-  MBPH -> TPH : updatePriceAlertList
-  activate TPH
-
-  TPH -->> MBPH : return
-  deactivate TPH
-
-  MBPH -->> MBPH : hideModal
-  activate MBPH
-  deactivate MBPH
-  deactivate MBPH
-  deactivate MBPH
-
+TPH -> PBPH : closeModal
+deactivate PBPH
 @enduml

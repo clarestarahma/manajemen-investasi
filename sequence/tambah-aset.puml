@@ -1,30 +1,30 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-hide footbox
 
-mainframe **Interaksi** Tambah Kepemilikan Aset
+hide footbox
+autoactivate on
+
+mainframe **sd** Tambah Kepemilikan Aset
 
 actor Investor as I
-boundary "Halaman Detail Portofolio" as TP
-boundary "Modal Tambah Aset" as MBP
+boundary "Modal Tambah Kepemilikan Aset" as PTKA
+boundary "Halaman Detail Portofolio" as TDP
 control "Portofolio Control" as PC
-entity "PortofolioAsset" as P
+entity "Portofolio" as P
 
-ref over I, P : Lihat Daftar Portofolio
+ref over I, P : Lihat Detail Portofolio
 
-I -> TP : addAsset
-activate TP
+I -> TDP : addOwnAsset
+TDP -> PTKA : show
 
-TP -> MBP : showModal
-activate MBP
-
-'User submits form
-I -> MBP : submit(assetId, quantity)
-activate MBP
-
-MBP -> PC : addAsset(portofolioId, assetId, quantity)
-activate PC
+loop error != null
+  I -> PTKA : submit(assetId, quantity)
+  PTKA -> TDP : addOwnAsset(assetId, quantity, userId)
+  TDP -> PC : addOwnAsset(assetId, quantity, userId)
+  PC -> P : addOwnAsset(assetId, quantity, userId)
+  P -->> PC : ownAsset, error
+  PC -->> TDP : ownAsset, error
 
 'Validation step
 PC -> PC : validate
@@ -36,34 +36,12 @@ alt invalid input
   MBP -->> MBP : showError
 else valid input
   'Create and save the Portofolio entity
-  PC -> P ** : create(portofolioId, assetId, quantity)
+  PC -> P ** : new PortofolioAsset(portofolioId, assetId, quantity)
   activate P
   P -->> PC : PortofolioAsset
   deactivate P
 end
 
-  PC -> P : save
-  activate P
-  P -> P : update fields (id)
-  activate P
-  deactivate P
-  P -->> PC : return
-  deactivate P
-
-  PC -->> MBP : Portofolio
-  deactivate PC
-
-  'Update UI and close modal
-  MBP -> TP : updatePortofolioList
-  activate TP
-
-  TP -->> MBP : return
-  deactivate TP
-
-  MBP -->> MBP : hideModal
-  activate MBP
-  deactivate MBP
-  deactivate MBP
-  deactivate MBP
-
+TDP -> PTKA : closeModal
+deactivate PTKA
 @enduml

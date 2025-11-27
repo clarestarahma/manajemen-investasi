@@ -1,13 +1,15 @@
 @startuml Sequence
 
 skinparam maxMessageSize 250
-hide footbox
 
-mainframe **Interaksi** Buat Portofolio
+hide footbox
+autoactivate on
+
+mainframe **sd** Buat Portofolio
 
 actor Investor as I
+boundary "Modal Buat Portofolio" as PBP
 boundary "Tab Portofolio" as TP
-boundary "Modal Buat Portofolio" as MBP
 control "Portofolio Control" as PC
 entity "Portofolio" as P
 
@@ -37,34 +39,12 @@ alt invalid input
   MBP -->> MBP : showError
 else valid input
   'Create and save the Portofolio entity
-  PC -> P ** : create(userId, name, currency, cashBalance)
+  PC -> P ** : new Portofolio(userId, name, currency, cashBalance)
   activate P
   P -->> PC : Portofolio
   deactivate P
 end
 
-  PC -> P : save
-  activate P
-  P -> P : update fields (id)
-  activate P
-  deactivate P
-  P -->> PC : return
-  deactivate P
-
-  PC -->> MBP : Portofolio
-  deactivate PC
-
-  'Update UI and close modal
-  MBP -> TP : updatePortofolioList
-  activate TP
-
-  TP -->> MBP : return
-  deactivate TP
-
-  MBP -->> MBP : hideModal
-  activate MBP
-  deactivate MBP
-  deactivate MBP
-  deactivate MBP
-
+TP -> PBP : tutupModal
+deactivate PBP
 @enduml
