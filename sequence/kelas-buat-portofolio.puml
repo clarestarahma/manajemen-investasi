@@ -1,0 +1,15 @@
+@startuml Sequence
+
+skinparam maxMessageSize 250
+hide footbox
+
+mainframe **Interaksi** Buat Portofolio
+
+actor Investor as I
+participant "p : Portofolio" as P
+
+I -> P** : createPortofolio(name, currency, cashBalance)
+P-->>I : p : Portofolio
+I -> P :  save()
+
+@enduml
