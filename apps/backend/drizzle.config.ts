@@ -1,13 +1,11 @@
 import { defineConfig } from "drizzle-kit";
 import { createConfig } from "@/shared/config/config";
 
-const config = createConfig();
-
 export default defineConfig({
   dialect: "postgresql",
   schema: "./src/infra/db/schema.ts",
   dbCredentials: {
-    url: config.databaseUrl,
+    url: process.env.DATABASE_URL!,
   },
-  casing: "snake_case"
+  casing: "snake_case",
 });
